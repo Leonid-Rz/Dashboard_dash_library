@@ -127,6 +127,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+from dash import html
+w_python_venv/
 
 # Spyder project settings
 .spyderproject
