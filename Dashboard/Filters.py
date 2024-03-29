@@ -3,3 +3,6 @@
 #import dash_bootstrap_components as dbc
 
 #from Dashboard.Parsing_data import df
+#from Dashboard.Parsing_data import df
+
+from Parsing_data import df 

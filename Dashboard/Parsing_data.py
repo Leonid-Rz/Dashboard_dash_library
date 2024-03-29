@@ -119,7 +119,6 @@ def create_value(row):
 df['Value'] = df.apply(create_value, axis=1) 
 
 
-
 #Сохранение полученного DataFrame в виде таблички 'Мониторинг_Новгород.xlsx', если мы в главной ветке
 if __name__ == '__main__': 
     df.to_excel(r'Мониторинг_Новгород.xlsx')
