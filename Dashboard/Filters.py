@@ -6,7 +6,7 @@ from Parsing_data import df
 
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
-
+#Ok?
 choosing_a_hospital = html.Div(children=[
                         html.H3(children='Выберете больницу'),
                         html.P([
