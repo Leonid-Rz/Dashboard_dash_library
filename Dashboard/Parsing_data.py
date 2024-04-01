@@ -55,7 +55,7 @@ df = pd.melt(df, id_vars=id_cols, value_vars=val_cols, var_name='Attribute', val
 
 
 #Чистим данные в DataFrame
-df['Value_NI']=df['Value_NI'].replace({'Х': 0, '': 0}, inplace=True)   #Заменяем значений "X" и пустых строк в столбце "Value_NI" на 0
+df['Value_NI'].replace({'Х': 0, '': 0}, inplace=True)   #Заменяем значений "X" и пустых строк в столбце "Value_NI" на 0
 df['Value_NI'].fillna(value=0, inplace=True)            #Удаляем строки с NaN
 df['Source'] = df['Source'].str.replace(' ', '_')       #Замещаем все пропуски в 'Source' символом '_'
 
@@ -77,13 +77,13 @@ for index, row in df.iterrows():
 df['Date'] = pd.to_datetime(df[['Year', 'Month', 'Day']], dayfirst=True) #Собираем дату в одну колонку
 df['Date_prev'] = df['Date'] - pd.DateOffset(months=1) #Создаем столбец 'Date_prev' с датой на один месяц меньше 
 
-df.drop(columns=['Source', 'Year', 'Day', 'Attribute', 'Source_1', 'Source_2',
+df.drop(columns=['Source', 'Year', 'Month', 'Day', 'Attribute', 'Source_1', 'Source_2',
                  'Source_5', 'Source_6', 'Source_7', 'Source_8'], inplace=True) #Чистим от лишних столбцов 
 
 
 
 #Реорганизация столбцов
-df = df[['Hospital', 'Date', 'Month', 'Date_prev', 'Целевые показатели оценки эффективности реализации мероприятий',
+df = df[['Hospital', 'Date', 'Date_prev', 'Целевые показатели оценки эффективности реализации мероприятий',
          '№ п/п', 'Единицы измерения', 'Периодичность представления', 'Value_NI']]
 
 
@@ -99,7 +99,8 @@ df['Value_prev'] = df['Value_prev'].fillna(value=0) #Левым объедине
 
 #Изменение названий больниц на правильные
 hosp_dict = {'Боровичская':'ГОБУЗ "Боровичская ЦРБ"', 'Старорусская':'ГОБУЗ "Старорусская ЦРБ"', 'НОКБ':'ГОБУЗ "НОКБ"'} 
-df['Hospital']=df['Hospital'].replace(to_replace=hosp_dict)
+df['Hospital'].replace(to_replace=hosp_dict, inplace=True)
+
 
 
 #????Создание столбца фактического значения'
@@ -118,6 +119,11 @@ def create_value(row):
 df['Value'] = df.apply(create_value, axis=1) 
 
 
+df['Month_number'] = df['Date'].dt.month
+
+
+
 #Сохранение полученного DataFrame в виде таблички 'Мониторинг_Новгород.xlsx', если мы в главной ветке
 if __name__ == '__main__': 
-    df.to_excel(r'Мониторинг_Новгород.xlsx')
+    #df.to_excel(r'Мониторинг_Новгород.xlsx')
+    print(df.info())

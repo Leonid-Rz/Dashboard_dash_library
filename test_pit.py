@@ -1,190 +1,232 @@
+import pandas as pd
+from dash import Dash, dcc, html, dash_table, callback, Output, Input
+import calendar
+import locale
 
+from Parsing_data import df
+from Style import hospital_stile, year_style, month_slider_style, month_style, table_style
 
 import pandas as pd
-from pathlib import Path
+from dash import Dash, html, dcc, dash_table, callback, Output, Input
 
-pd.set_option('display.max.columns', None)
-pd.set_option('display.max.rows', None)
+#import plotly.express as px
+#from plotly.subplots import make_subplots
+#import plotly.graph_objects as go
 
-p = Path(r'./Data') 
-file_list = [x for x in p.iterdir() if str(x).endswith('.xls')]
-
-
-file = file_list[0]
-df = pd.read_excel(file, engine='openpyxl') 
-columns = [col.replace('\n', ' ') for col in list(df.iloc[5])] 
-columns.insert(0, 'Source')  
-df = pd.DataFrame(columns=columns)
-
-for file in file_list: 
-    df_f = pd.read_excel(file, engine='openpyxl') 
-    columns = [col.replace('\n', ' ') for col in list(df_f.iloc[5])]
-    df_f.columns = columns 
-    df_f = df_f[7:].reset_index(drop=True)
-    source = str(file)[str(file).rfind('\\') + 1:].replace('.xls', '') 
-    df_f['Source'] = source
-    df_f.dropna(axis='index', 
-                subset=['Целевые показатели оценки эффективности реализации мероприятий'],
-                inplace=True) 
-    df = pd.concat([df, df_f],ignore_index=True)  
-
-id_cols = ['Source', '№ п/п', 'Целевые показатели оценки эффективности реализации мероприятий', 'Единицы измерения', 'Периодичность представления'] 
-val_cols = [col for col in df.columns if col.startswith('Фактическое')] 
-df = pd.melt(df, id_vars=id_cols, value_vars=val_cols, var_name='Attribute', value_name='Value_NI').dropna(axis='index', subset=['Value_NI']).reset_index(drop=True)
-   
-df['Value_NI'].replace({'Х': 0, '': 0}, inplace=True)   
-df['Value_NI'].fillna(value=0, inplace=True)            
-df['Source'] = df['Source'].str.replace(' ', '_')     
+from Parsing_data import df
+from Style import b_table
 
 
-df[['Source_1', 'Source_2', 'Year', 'Hospital', 'Source_5', 'Source_6', 'Source_7', 'Source_8']] = df['Source'].str.split('_', expand=True)
-df['Year'] = df['Year'].astype('int')
-df['Month'] = 0
-df['Day'] = 1
+locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
-for index, row in df.iterrows():
-    for j in range(1, 13):
-        if str(j) in row['Attribute']: 
-            df.at[index, 'Month'] = j 
-    df.at[index, 'Year'] = row['Year'] + 2000 
+choosing_a_hospital = html.Div(children=[
+                        html.H3(children='Выберете больницу'),
+                        html.P([
+                            dcc.Checklist(            
+                                ['ГОБУЗ "Боровичская ЦРБ"','ГОБУЗ "Старорусская ЦРБ"', 'ГОБУЗ "НОКБ"'],
+                                ['ГОБУЗ "Боровичская ЦРБ"','ГОБУЗ "Старорусская ЦРБ"', 'ГОБУЗ "НОКБ"'], 
+                                id='choose_a_hospital'
+                                ),
+                        html.Hr()
+                                ])
+                            ],
+                        style=hospital_stile
+                        )
+                      
+choosing_a_year = html.Div(children=[
+                    html.H3(children='Выберете год'),
+                        html.P([
+                        dcc.RadioItems(            
+                            ['2022','2023', '2024'],
+                            '2022', 
+                            id='choose_a_year'
+                                    ),
+                           html.Hr()
+                           ])
+                        ],
+                        style=year_style
+                        )
 
-df['Date'] = pd.to_datetime(df[['Year', 'Month', 'Day']], dayfirst=True) 
-df['Date_prev'] = df['Date'] - pd.DateOffset(months=1) 
+choosing_the_month= html.Div(children=[
+                        html.H3(children='Выберете месяц'),
+                        html.Div(children=[
+                            dcc.RangeSlider(
+                                min=1, max=12, 
+                                step=1,
+                                value=[1,12],
+                                marks={i: calendar.month_name[i] for i in range(1, 13)},
+                                tooltip={"placement": "bottom", "always_visible": False},
+                                vertical = True,
+                                verticalHeight = 300,
+                                id='monthly_slider'
+                                )], 
+                            style= month_slider_style
+                                )
+                        ],   
+                        style=month_style 
+                        )
 
-df.drop(columns=['Source', 'Year', 'Day', 'Attribute', 'Source_1', 'Source_2',
-                 'Source_5', 'Source_6', 'Source_7', 'Source_8'], inplace=True) 
+table=html.Div(children=[
+    html.H1('Табличные данные'),
+    html.Div(id='datatable-container')],style=table_style)
+
+hospital_stile = {'display': 'block', 
+                    'fontSize': '15px',
+                    'margin-left': '10px', 
+                    'width': '220px', 
+                    'height': '105px'
+                }
+
+Body_stile={'display': 'block', 
+            'backgroundColor': '#87CEFA',   #HEX-коды цветов
+            'fontSize': '15px',
+            'margin-left': '0px', 
+            'margin-right': '0px',
+            'width': '250px', 
+            'height': '1000px'
+                 }
+
+year_style={'display': 'block',
+            'fontSize': '15px',
+            'margin-left': '10px', 
+            'width': '220px', 
+            'height': '90px'
+            }
+
+month_slider_style={'display': 'block', 
+                    'fontSize': '14px',
+                    'margin-left': '35px', 
+                    'width': '20px', 
+                    }
+
+month_style = {'display': 'block', 
+                'fontSize': '15px',
+                'margin-left': '10px', 
+                'width': '200px', 
+                'height': '400px'
+                }
+
+table_style={'display': 'block', 
+            'backgroundColor': '#FFFFFF',
+            'fontSize': '15px',
+            'margin-left': '0px', 
+            'margin-right': '0px',
+            'width': '1700px', 
+            'height': '360px'
+                 }
+
+b_table = {'whiteSpace': 'normal',
+        'backgroundColor': 'white', 
+        'height': 'auto'}
 
 
-df = df[['Hospital', 'Date', 'Month', 'Date_prev', 'Целевые показатели оценки эффективности реализации мероприятий',
-         '№ п/п', 'Единицы измерения', 'Периодичность представления', 'Value_NI']]
+app = Dash(__name__)
 
-df_prev = df[['Hospital', 'Date', 'Целевые показатели оценки эффективности реализации мероприятий',
-         '№ п/п', 'Value_NI']].copy() 
-df_prev.rename({'Value_NI':'Value_prev', 'Date':'Date_prev'}, axis='columns', inplace=True)
-df = df.merge(df_prev, how='left', on=['Hospital', 'Date_prev', 'Целевые показатели оценки эффективности реализации мероприятий', '№ п/п'])
-df['Value_prev'] = df['Value_prev'].fillna(value=0) 
+card_total_ASC= dbc.Card(children=[
+                        dbc.CardHeader("Всего ОКС"),
+                        dbc.CardBody(html.P(id='total_ASC'))
+                        ])
 
-hosp_dict = {'Боровичская':'ГОБУЗ "Боровичская ЦРБ"', 'Старорусская':'ГОБУЗ "Старорусская ЦРБ"', 'НОКБ':'ГОБУЗ "НОКБ"'} 
-df['Hospital'].replace(to_replace=hosp_dict, inplace=True)
+card_ACS_with_ST= dbc.Card(children=[
+                        dbc.CardHeader("ОКС с подъемом ST"),
+                        dbc.CardBody(html.P(id='ACS_with_ST'))
+                        ])
 
+card_ACS_without_ST= dbc.Card(children=[
+                        dbc.CardHeader("ОКС без подъема ST"),
+                        dbc.CardBody(html.P(id='ACS_without_ST'))
+                        ])
 
-def create_value(row):
-    if row['Периодичность представления'] != '1 раз в месяц':
-        val = row['Value_NI']
-    elif row['Date'].month == 1:
-        val = row['Value_NI']
-    else:
-        val = row['Value_NI'] - row['Value_prev']
-    return val
-
-
-df['Value'] = df.apply(create_value, axis=1) 
-
-print (df.iloc[0:5])
-
-if __name__ == '__main__': 
-    df.to_excel(r'Мониторинг_Новгород.xlsx')
-
-
-
-            html.Div(
-            children=[total_ACS_card, ACS_with_elevation_ST_card, ACS_without_elevation_ST_card],
-            style={'display': 'inline-block', 'vertical-align': 'top', 'width': '15%', 'left': 0}),
-    
-
-
-
-
-
-
-
-
-def choose_hospital_ASC(year, month, input_hospital):
-    month_range = range(month[0], month[1])
-    # Всего ОКС
-    total_ACS = df.loc[(df['№ п/п'] == 47) &
-                       (df['Date'].dt.to_period('Y') == year) &
-                       (df['Date'].dt.month.isin(month_range)) &
-                       (df['Hospital'].isin(input_hospital)), 'Value'].sum()
-
-    return total_ACS, ACS_with_elevation_ST, ACS_without_elevation_ST, ACS_fig, f'{PCI_coverage:.1%}', \
-           f'{ACS_mortality_rate:.1%}', f'{MI_mortality_rate:.1%}', MI_fig, ACS_path_funnel_fig, \
-           f'Умерших: {int(cnt_deaths_ACS_with_eST)}', f'Общая летальность при ОКСпST: {ACS_with_eST_mortality_rate:.1%}', \
-           f'Летальность идеального пути: {ACS_with_eST_ideal_path_mortality_rate:.1%}', \
-           f'Доля умерших без ЧКВ, АКШ и ТЛТ: {ACS_with_eST_without_revasc_deaths_part:.1%}', ACS_with_eST_risk_fig, \
-           f'Охват ЧКВ: {ACS_without_eST_high_risk_PTCA_coverage:.1%}', \
-           f'Летальность: {ACS_without_eST_high_risk_mortality_rate:.1%}', \
-           f'Охват ЧКВ: {ACS_without_eST_low_risk_PTCA_coverage:.1%}', \
-           f'Летальность: {ACS_without_eST_high_risk_mortality_rate:.1%}', Shock_fig, \
-           f'Кол-во ОКС с шоком: {int(cnt_shock)}', f'Охват ЧКВ: {shock_PTCA_coverage:.1%}', \
-           f'Летальность при шоке: {shock_mortality_rate:.1%}', \
-           f'Доля пациентов с шоком среди всех умерших при ОКС {part_shock_for_deaths:.1%}'
-
-
-total_ACS_card = dbc.Card(
-    children=[
-        dbc.CardHeader("Всего ОКС", className='information_card_header_1'),
-        dbc.CardBody(html.P(className="card_text_1", id='total_ASC'))
-    ],
-    className='information_card_1')
-app.layout = html.Div(
-    #style={'backgroundColor': colors['background']},
-    children=[
-        sidebar,
-        tabs_navigator_offcanvas,
-        content
-    ]
-)
-
+app.layout =html.Div(children= [ 
+                html.Div(children= [ 
+                    dbc.Container(children= [
+                                            card_total_ASC
+                                            ],
+                                        style={
+                                            'border': '2px solid black',
+                                            'padding': '20px',
+                                            'display': 'block', 
+                                            'backgroundColor': '#DC143C',   #HEX-коды цветов
+                                            'margin-left': '0px', 
+                                            'margin-right': '0px',
+                                            'width': '150px', 
+                                            'height': '75px'}),
+                    dbc.Container(children= [
+                                            card_ACS_with_ST
+                                            ],
+                                        style={
+                                            'border': '2px solid black',
+                                            'padding': '20px',
+                                            'display': 'block', 
+                                            'backgroundColor': '#DC143C',   #HEX-коды цветов
+                                            'margin-left': '0px', 
+                                            'margin-right': '0px',
+                                            'width': '150px', 
+                                            'height': '75px'}),
+                    dbc.Container(children= [
+                                            card_ACS_without_ST
+                                            ],
+                                        style={
+                                            'border': '2px solid black',
+                                            'padding': '20px',
+                                            'display': 'block', 
+                                            'backgroundColor': '#DC143C',   #HEX-коды цветов
+                                            'margin-left': '0px', 
+                                            'margin-right': '0px',
+                                            'width': '150px', 
+                                            'height': '75px'})
+                                    ]),
+                html.Div( children= [
+                choosing_a_hospital,
+                choosing_a_year, 
+                choosing_the_month, 
+                table,
+                ],
+                style=Body_stile
+                  )
+])
 
 @callback(
-    Output(component_id='total_ASC', component_property='children'),
-    Output(component_id='cnt_ACS_with_elevation_ST', component_property='children'),
-    Output(component_id='cnt_ACS_without_elevation_ST', component_property='children'),
-    Output(component_id='ACS_bar', component_property='figure'),
-    Output(component_id='PCI_coverage', component_property='children'),
-    Output(component_id='ACS_mortality_rate', component_property='children'),
-    Output(component_id='MI_mortality_rate', component_property='children'),
-    Output(component_id='MI_bar', component_property='figure'),
-    Output(component_id='ACS_path_funnel', component_property='figure'),
-    Output(component_id='count_deaths_ACS_with_eST', component_property='children'),
-    Output(component_id='mortality_rate_ACS_with_eST', component_property='children'),
-    Output(component_id='mortality_rate_ACS_with_eST_ideal_path', component_property='children'),
-    Output(component_id='part_deaths_ACS_with_eST_without_revasc', component_property='children'),
-    Output(component_id='ACS_without_eST_risk', component_property='figure'),
-    Output(component_id='PTCA_coverage_ACS_without_eST_high_risk', component_property='children'),
-    Output(component_id='mortality_rate_ACS_without_eST_high_risk', component_property='children'),
-    Output(component_id='PTCA_coverage_ACS_without_eST_low_risk', component_property='children'),
-    Output(component_id='mortality_rate_ACS_without_eST_low_risk', component_property='children'),
-    Output(component_id='Shock_bar', component_property='figure'),
-    Output(component_id='count_shock', component_property='children'),
-    Output(component_id='PTCA_coverage_for_shock', component_property='children'),
-    Output(component_id='mortality_rate_shock', component_property='children'),
-    Output(component_id='part_shock_for_deaths', component_property='children'),
-    Input(component_id='year_choice', component_property='value'),
-    Input(component_id='month_choice', component_property='value'),
-    Input(component_id='hospital_choice', component_property='value')
+    Output('total_ASC', 'children'),
+    Output('ACS_with_ST', 'children'),
+    Output('ACS_without_ST', 'children'),
+    Output('datatable-container', 'children'),
+    Input('choose_a_hospital', 'value'),
+    Input('monthly_slider', 'value'),
+    Input('choose_a_year', 'value')
 )
-def intermediate_function(*args, **kwargs):
-    return choose_hospital_ASC(*args, **kwargs)
+def intermediate_function (*args, **kwargs):
+    return calculations (*args, **kwargs)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
-@callback(
-    Output(component_id='Tabs_navigator', component_property='is_open'),
-    Input(component_id='Tabs_navigator_open_button', component_property='n_clicks'),
-    [State("Tabs_navigator", "is_open")],
-)
-def open_tabs_navigator(n1, is_open):
-    if n1:
-        return not is_open
-    return is_open
 
-# Development server
-# if __name__ == '__main__':
+def calculations (selected_hospital, month, year ):
+        #Фильтр
+            #Основная таблица
+            #t_year=[int (x) for x in year]
+            new_df = df[(df['Hospital'].isin(selected_hospital)) & (df['Month'].isin(range(month[0], month [1]+1))) & (df['Date'].dt.to_period('Y') == year)]
+            table= dash_table.DataTable(style_data=b_table,
+                            data=new_df.to_dict('records'), 
+                            page_size=15
+                            )
+            # Всего ОКС
+            total_ACS = df.loc[(df['№ п/п'] == 47) &
+                            (df['Date'].dt.to_period('Y') == year) &
+                            (df['Date'].dt.month.isin(range(month[0], month [1]+1))) &
+                            (df['Hospital'].isin(selected_hospital)),'Value'].sum()
+            #Кол-во ОКС с подъемом ST
+            ACS_with_ST = df.loc[(df['№ п/п'] == '47.1') &
+                            (df['Date'].dt.to_period('Y') == year) &
+                            (df['Date'].dt.month.isin(range(month[0], month [1]+1))) &
+                            (df['Hospital'].isin(selected_hospital))].shape[0]
+            #Кол-во ОКС без подъема ST
+            ACS_without_ST = df.loc[(df['№ п/п'] == '47.2') &
+                            (df['Date'].dt.to_period('Y') == year) &
+                            (df['Date'].dt.month.isin(range(month[0], month [1]+1))) &
+                            (df['Hospital'].isin(selected_hospital))].shape[0]
 
-year_choice_card = dbc.Card(
-    children=[
-        dbc.CardHeader('Выберите год отчета', className='card-filter_header_1'),
-        dbc.CardBody(dcc.RadioItems(options=['2022', '2023', '2024'], value='2023', id='year_choice'))
-    ],
-    className='card-filter_1')
+            return total_ACS, ACS_with_ST, ACS_without_ST, table
+
