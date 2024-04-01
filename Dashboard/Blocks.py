@@ -2,11 +2,12 @@ import pandas as pd
 from dash import Dash, dcc, html, dash_table, callback, Output, Input
 import calendar
 import locale
+
 from Parsing_data import df
+from Style import hospital_stile, year_style, month_slider_style, month_style, table_style
 
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
-#Ok?
 choosing_a_hospital = html.Div(children=[
                         html.H3(children='Выберете больницу'),
                         html.P([
@@ -18,15 +19,9 @@ choosing_a_hospital = html.Div(children=[
                         html.Hr()
                                 ])
                             ],
-                        style={'display': 'block', 
-                        #'backgroundColor': '#00FFFF',   #HEX-коды цветов
-                        'fontSize': '15px',
-                        'margin-left': '10px', 
-                        'width': '200px', 
-                        'height': '105px'
-                        })
-#
-                            
+                        style=hospital_stile
+                        )
+                      
 choosing_a_year = html.Div(children=[
                     html.H3(children='Выберете год'),
                         html.P([
@@ -38,13 +33,8 @@ choosing_a_year = html.Div(children=[
                            html.Hr()
                            ])
                         ],
-                        style={'display': 'block', 
-                        #'backgroundColor': '#00FFFF',   #HEX-коды цветов
-                        'fontSize': '15px',
-                        'margin-left': '10px', 
-                        'width': '200px', 
-                        'height': '90px'
-                        })
+                        style=year_style
+                        )
 
 choosing_the_month= html.Div(children=[
                         html.H3(children='Выберете месяц'),
@@ -59,25 +49,12 @@ choosing_the_month= html.Div(children=[
                                 verticalHeight = 300,
                                 id='monthly_slider'
                                 )], 
-                            style={
-                                'display': 'block', 
-                                #'backgroundColor': '#00FFFF',   #HEX-коды цветов
-                                'fontSize': '14px',
-                                'margin-left': '35px', 
-                                'width': '20px', 
-                                'height': '3px'}
+                            style= month_slider_style
                                 )
                         ],   
-                        style={'display': 'block', 
-                        #'backgroundColor': '#00FFFF',   #HEX-коды цветов
-                        'fontSize': '15px',
-                        'margin-left': '10px', 
-                        'width': '200px', 
-                        'height': '360px'
-                        }
-                    )
+                        style=month_style 
+                        )
 
-table=html.Div([
+table=html.Div(children=[
     html.H1('Табличные данные'),
-    html.Div(id='datatable-container')
-            ])
+    html.Div(id='datatable-container')],style=table_style)

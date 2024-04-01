@@ -55,7 +55,7 @@ df = pd.melt(df, id_vars=id_cols, value_vars=val_cols, var_name='Attribute', val
 
 
 #Чистим данные в DataFrame
-df['Value_NI'].replace({'Х': 0, '': 0}, inplace=True)   #Заменяем значений "X" и пустых строк в столбце "Value_NI" на 0
+df['Value_NI']=df['Value_NI'].replace({'Х': 0, '': 0}, inplace=True)   #Заменяем значений "X" и пустых строк в столбце "Value_NI" на 0
 df['Value_NI'].fillna(value=0, inplace=True)            #Удаляем строки с NaN
 df['Source'] = df['Source'].str.replace(' ', '_')       #Замещаем все пропуски в 'Source' символом '_'
 
@@ -99,8 +99,7 @@ df['Value_prev'] = df['Value_prev'].fillna(value=0) #Левым объедине
 
 #Изменение названий больниц на правильные
 hosp_dict = {'Боровичская':'ГОБУЗ "Боровичская ЦРБ"', 'Старорусская':'ГОБУЗ "Старорусская ЦРБ"', 'НОКБ':'ГОБУЗ "НОКБ"'} 
-df['Hospital'].replace(to_replace=hosp_dict, inplace=True)
-
+df['Hospital']=df['Hospital'].replace(to_replace=hosp_dict)
 
 
 #????Создание столбца фактического значения'
