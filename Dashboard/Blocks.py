@@ -5,35 +5,42 @@ import calendar
 import locale
 
 from Parsing_data import df
-from Style import hospital_stile, year_style, month_slider_style, month_style, table_style
 
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
+head = html.Div(children=[
+    'Мониторинг ОКС Новгородская область'
+], className='heading'
+)
+
 
 card_total_ASC=dbc.Card(children=[
-                        dbc.CardHeader("Всего ОКС"),
-                        dbc.CardBody(html.P(id='total_ASC'))
-                        ]
+                        dbc.CardHeader("Всего ОКС", className='card_header'),
+                        dbc.CardBody(html.P(id='total_ASC', className='card_text'))
+                        ], className='_card_'
                     )
 
 card_ACS_with_ST= dbc.Card(children=[
-                        dbc.CardHeader("ОКС с подъемом ST"),
-                        dbc.CardBody(html.P(id='ACS_with_ST'))
-                        ])
+                        dbc.CardHeader("ОКС с подъемом ST", className='card_header'),
+                        dbc.CardBody(html.P(id='ACS_with_ST', className='card_text'))
+                        ], className='_card_'
+                    )
 
 card_ACS_without_ST=dbc.Card(children=[
-                       dbc.CardHeader("ОКС без подъема ST"),
-                        dbc.CardBody(html.P(id='ACS_without_ST'))
-                        ])
+                       dbc.CardHeader("ОКС без подъема ST", className='card_header'),
+                        dbc.CardBody(html.P(id='ACS_without_ST', className='card_text'))
+                        ], className='_card_'
+                    )
 
-line_of_cards= dbc.Row([
-    dbc.Col(card_total_ASC, width=4),
-    dbc.Col(card_ACS_with_ST, width=4),
-    dbc.Col(card_ACS_without_ST, width=4)
-])
+line_of_cards= html.Div(children=[
+        card_total_ASC,
+        card_ACS_with_ST,
+        card_ACS_without_ST
+], className='cards_stack'
+)
 
 choosing_a_hospital = html.Div(children=[
-                        html.Div(children='Выберете больницу'),
+                        html.H3(children='Выберете больницу', style={'fontWeight': 550}),
                         html.P([
                             dcc.Checklist(            
                                 ['ГОБУЗ "Боровичская ЦРБ"','ГОБУЗ "Старорусская ЦРБ"', 'ГОБУЗ "НОКБ"'],
@@ -41,13 +48,12 @@ choosing_a_hospital = html.Div(children=[
                                 id='choose_a_hospital'
                                 ),
                         html.Hr()
-                                ])
-                            ],
-                        style=hospital_stile
+                                ], className='sidebar_text_style')
+                            ]
                         )
                       
 choosing_a_year = html.Div(children=[
-                    html.Div(children='Выберете год'),
+                    html.H3(children='Выберете год', style={'fontWeight': 550}),
                         html.P([
                         dcc.RadioItems(            
                             ['2022','2023', '2024'],
@@ -55,30 +61,34 @@ choosing_a_year = html.Div(children=[
                             id='choose_a_year'
                                     ),
                            html.Hr()
-                           ])
-                        ],
-                        style=year_style
+                           ], className='sidebar_text_style')
+                        ]
                         )
 
 choosing_the_month= html.Div(children=[
-                        html.Div(children='Выберете месяц'),
+                        html.H3(children='Выберете месяц', style={'fontWeight': 550}),
                         html.Div(children=[
                             dcc.RangeSlider(
                                 min=1, max=12, 
                                 step=1,
                                 value=[1,12],
-                                marks={i: calendar.month_name[i] for i in range(1, 13)},
+                                marks={i:{'label': calendar.month_name[i], 'style': {'fontSize': '17px', 'color':'black'}} for i in range(1, 13)},
                                 tooltip={"placement": "bottom", "always_visible": False},
                                 vertical = True,
-                                verticalHeight = 300,
+                                verticalHeight = 400,
                                 id='monthly_slider'
-                                )], 
-                            style= month_slider_style
+                                )], className='month_slider_style'
                                 )
-                        ],   
-                        style=month_style 
+                        ]
                         )
 
 table=html.Div(children=[
-    html.H1('Табличные данные'),
-    html.Div(id='datatable-container')],style=table_style)
+    html.Div('Табличные данные', className='heading_table'),
+    html.Div(id='datatable-container',className='b_table')])
+
+block_sidebar= html.Div( children= [
+                    choosing_a_hospital,
+                    choosing_a_year, 
+                    choosing_the_month
+                    ], className='sidebar'
+                    )

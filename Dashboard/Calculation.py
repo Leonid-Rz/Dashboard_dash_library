@@ -6,7 +6,11 @@ from dash import Dash, html, dcc, dash_table, callback, Output, Input
 #import plotly.graph_objects as go
 
 from Parsing_data import df
-from Style import b_table
+
+b_table = {'whiteSpace': 'normal',
+        'backgroundColor': 'white', 
+        'height': 'auto'}
+
 
 def calculations (selected_hospital, month, year ):
             #Подготовка данных
@@ -14,9 +18,17 @@ def calculations (selected_hospital, month, year ):
                         (df['Date'].dt.month.isin(range(month[0], month[1] + 1))) &
                         (df['Date'].dt.year == int(year))]
             #Основная таблица
-            table = dash_table.DataTable(style_data=b_table,
-                                        data=new_df.to_dict('records'),
-                                        page_size=15)
+            table = dash_table.DataTable(data=new_df.to_dict('records'),
+                                        page_size=15,
+                                        style_data={
+                                            'whiteSpace': 'normal',
+                                            'backgroundColor': '#BEEFFF', 
+                                            'height': 'auto'},
+                                        style_header={
+                                            'backgroundColor': '#BEEFFF',
+                                            'fontWeight': 'bold'  
+    }
+                                        )
             # Всего ОКС
             total_ACS =  new_df.loc[new_df['№ п/п'] == 47, 'Value'].sum()
 

@@ -1,0 +1,88 @@
+.card_header {
+    font-family: 'Arial';
+    font-size:20px;
+    font-weight: 900;
+    text-align: center;
+    background-color: rgb(90, 190, 230);
+}
+
+.card_text{ 
+    font-family: 'Arial';
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    text-align: center;
+    vertical-align: bottom;
+    margin: 0;
+}
+
+._card_ {
+    margin: 15px;
+    background-color: rgb(210, 240, 245);
+    display: flex;
+    bottom: 15px;
+    border: 1px solid rgb(0, 0, 0);
+}
+
+.cards_stack{
+    display: initial;
+    vertical-align: top;
+    width: 15%;
+}
+
+.sidebar{
+    height: 20%;
+    width: auto;
+    margin-left: 15px;
+    background-color: rgb(90, 190, 230);
+    padding: 8px 8px 8px 30px;
+    display: inline-block;
+    vertical-align: top;
+    overflow: auto;
+    box-sizing:conborder-box;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 1.5%;
+}
+
+.sidebar_text_style{
+    font-family: 'Arial';
+    font-size:20px;
+    font-weight: 500;
+    display: block;
+    padding: 5px 22px 0px 0px;
+}
+
+.month_slider_style{
+    display: block;
+    font-size:55px;
+    margin-left: 30px; 
+    width: 20px;
+    }
+
+.flex{
+    display: flex;
+}
+
+.heading{
+    display: block;
+    font-family: 'Arial';
+    font-size: 50px;
+    font-weight: 600;
+    color: black;
+    text-align: center;
+}
+
+.heading_table{
+    display: block;
+    font-family: 'Arial';
+    font-size: 40px;
+    font-weight: 600;
+    color: black;
+    text-align: center;
+    height: 70px;
+    background-color: rgb(190, 239, 255);
+         }
+
+.big_color{
+    background-color: rgb(190, 239, 255);
+}

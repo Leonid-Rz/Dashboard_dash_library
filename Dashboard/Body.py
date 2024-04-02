@@ -5,24 +5,24 @@ import pandas as pd
 import dash_html_components as html
 
 from Parsing_data import df 
-from Blocks import choosing_a_hospital, choosing_a_year, choosing_the_month, table, line_of_cards
+from Blocks import *
 from Calculation import calculations
-from Style import Body_stile
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-
 app.layout = html.Div(children= [
-            html.Div(children = line_of_cards), 
-            html.Div( children= [
-                    choosing_a_hospital,
-                    choosing_a_year, 
-                    choosing_the_month, 
-                    table,
-                    ],
-                    style=Body_stile
-                    )
-                ])
+                head,
+                html.Div(children= [
+                    block_sidebar,
+                    line_of_cards
+                    ],className='flex'
+                    ),
+                html.Div( children= [
+                    table
+                     ]
+                     )
+                    ],className='big_color'
+                )
 
 @callback(
     Output('total_ASC', 'children'),
