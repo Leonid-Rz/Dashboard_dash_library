@@ -20,8 +20,10 @@
     margin: 15px;
     background-color: rgb(210, 240, 245);
     display: flex;
+    padding-bottom: 10px;
     bottom: 15px;
     border: 1px solid rgb(0, 0, 0);
+
 }
 
 .cards_stack{
@@ -57,7 +59,7 @@
     font-size:55px;
     margin-left: 30px; 
     width: 20px;
-    }
+}
 
 .flex{
     display: flex;
@@ -81,7 +83,7 @@
     text-align: center;
     height: 70px;
     background-color: rgb(190, 239, 255);
-         }
+}
 
 .big_color{
     background-color: rgb(190, 239, 255);

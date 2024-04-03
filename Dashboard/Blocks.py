@@ -32,10 +32,29 @@ card_ACS_without_ST=dbc.Card(children=[
                         ], className='_card_'
                     )
 
+card_PCI_coverage =dbc.Card(children=[
+                        dbc.CardHeader("Охват ЧКВ", className='card_header'),
+                        dbc.CardBody(html.P(id='PCI_coverage', className='card_text'))
+                        ], className='_card_'
+                    )
+card_ACS_mort_rate=dbc.Card(children=[
+                        dbc.CardHeader("Летальность при ОКС", className='card_header'),
+                        dbc.CardBody(html.P(id='ACS_mort_rate', className='card_text'))
+                        ], className='_card_'
+                    )
+card_MI_mortality_rate=dbc.Card(children=[
+                        dbc.CardHeader("Летальность при ИМ", className='card_header'),
+                        dbc.CardBody(html.P(id='MI_mortality_rate', className='card_text'))
+                        ], className='_card_'
+                    )
+
 line_of_cards= html.Div(children=[
         card_total_ASC,
         card_ACS_with_ST,
-        card_ACS_without_ST
+        card_ACS_without_ST,
+        card_PCI_coverage,
+        card_ACS_mort_rate,
+        card_MI_mortality_rate
 ], className='cards_stack'
 )
 
