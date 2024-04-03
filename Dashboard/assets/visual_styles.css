@@ -88,3 +88,12 @@
 .big_color{
     background-color: rgb(190, 239, 255);
 }
+
+.button{
+    font-family: 'Arial';
+    font-size:20px;
+    font-weight: 900;
+    text-align: center;
+    margin-left: 15px;
+    background-color: rgb(90, 190, 230);
+}

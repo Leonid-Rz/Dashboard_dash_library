@@ -101,9 +101,9 @@ choosing_the_month= html.Div(children=[
                         ]
                         )
 
-table=html.Div(children=[
-    html.Div('Табличные данные', className='heading_table'),
-    html.Div(id='datatable-container',className='b_table')])
+#block_table=html.Div(children=[
+ #   html.Div('Табличные данные', className='heading_table'),
+  #  html.Div(id='datatable-container',className='b_table')])
 
 block_sidebar= html.Div( children= [
                     choosing_a_hospital,

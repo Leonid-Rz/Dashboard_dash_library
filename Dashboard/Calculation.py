@@ -12,11 +12,12 @@ b_table = {'whiteSpace': 'normal',
         'height': 'auto'}
 
 
-def calculations (selected_hospital, month, year ):
+def calculations (selected_hospital, month, year, n_clicks):
             #Подготовка данных
             new_df = df[(df['Hospital'].isin(selected_hospital)) & 
                         (df['Date'].dt.month.isin(range(month[0], month[1] + 1))) &
                         (df['Date'].dt.year == int(year))]
+            
             #Основная таблица
             table = dash_table.DataTable(data=new_df.to_dict('records'),
                                         page_size=15,
@@ -26,9 +27,9 @@ def calculations (selected_hospital, month, year ):
                                             'height': 'auto'},
                                         style_header={
                                             'backgroundColor': '#BEEFFF',
-                                            'fontWeight': 'bold'  
-    }
-                                        )
+                                            'fontWeight': 'bold' 
+                                        }
+            )
             # Всего ОКС
             total_ACS =  new_df.loc[new_df['№ п/п'] == 47, 'Value'].sum()
 
@@ -51,4 +52,15 @@ def calculations (selected_hospital, month, year ):
             total_IM = new_df.loc[new_df['№ п/п'] == 49,'Value'].sum()
             MI_mortality_rate = f'{round((IM_mort / total_IM)*100, 1)} %' if total_IM > 0 else 0
 
-            return total_ACS, ACS_with_ST, ACS_without_ST, PCI_coverage,ACS_mort_rate, MI_mortality_rate, table 
+            if n_clicks is None:
+                block_table = []
+
+            elif n_clicks % 2 != 0: 
+                block_table=html.Div(children=[
+                    html.Div('Табличные данные', className='heading_table'),
+                    html.Div(table,className='b_table')])
+            else:
+                block_table = []  
+                            
+            return total_ACS, ACS_with_ST, ACS_without_ST, PCI_coverage,ACS_mort_rate, MI_mortality_rate, block_table 
+

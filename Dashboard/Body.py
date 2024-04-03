@@ -17,10 +17,9 @@ app.layout = html.Div(children= [
                     line_of_cards
                     ],className='flex'
                     ),
-                html.Div( children= [
-                    table
-                     ]
-                     )
+                html.Button('Показать табличные данные', id='show-table-button',className='big_color'),
+                html.Div (id='datatable-container', className='color')
+
                     ],className='big_color'
                 )
 
@@ -34,10 +33,12 @@ app.layout = html.Div(children= [
     Output('datatable-container', 'children'),
     Input('choose_a_hospital', 'value'),
     Input('monthly_slider', 'value'),
-    Input('choose_a_year', 'value')
+    Input('choose_a_year', 'value'),
+    Input('show-table-button', 'n_clicks')
 )
 def intermediate_function (*args, **kwargs):
     return calculations (*args, **kwargs)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
