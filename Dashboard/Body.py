@@ -1,27 +1,20 @@
-from dash import Dash, html, dcc, dash_table, callback, Output, Input, State
+from dash import Dash, html, callback, Output, Input
 import dash_bootstrap_components as dbc
-import plotly.express as px
 import pandas as pd
 import dash_html_components as html
 
-from Parsing_data import df 
-from Blocks import *
+from Blocks import head, sidebar_and_cards, table_block
 from Calculation import calculations
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-app.layout = html.Div(children= [
-                head,
-                html.Div(children= [
-                    block_sidebar,
-                    line_of_cards
-                    ],className='flex'
-                    ),
-                html.Button('Показать табличные данные', id='show-table-button',className='big_color'),
-                html.Div (id='datatable-container', className='color')
 
-                    ],className='big_color'
-                )
+app.layout = html.Div(children= [
+                            head,
+                            sidebar_and_cards,
+                            table_block
+                            ], className='big_color'
+                            )
 
 @callback(
     Output('total_ASC', 'children'),

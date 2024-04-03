@@ -1,59 +1,64 @@
+/*Заголовок карточки*/
 .card_header {
-    font-family: 'Arial';
+    font-family: 'Arial'; 
     font-size:20px;
     font-weight: 900;
-    text-align: center;
+    text-align: center; 
     background-color: rgb(90, 190, 230);
 }
 
+/*Тело карточки*/
 .card_text{ 
     font-family: 'Arial';
     font-size: 20px;
     font-weight: 600;
-    color: black;
     text-align: center;
-    vertical-align: bottom;
+    vertical-align: bottom; 
     margin: 0;
+    color: black;
 }
 
+/*Вся карточка*/
 ._card_ {
-    margin: 15px;
-    background-color: rgb(210, 240, 245);
     display: flex;
+    margin: 15px;
     padding-bottom: 10px;
     bottom: 15px;
     border: 1px solid rgb(0, 0, 0);
-
+    background-color: rgb(210, 240, 245);
 }
 
+/*Стопка карточек*/
 .cards_stack{
     display: initial;
     vertical-align: top;
     width: 15%;
 }
 
+/*Сайтбар*/
 .sidebar{
-    height: 20%;
     width: auto;
-    margin-left: 15px;
-    background-color: rgb(90, 190, 230);
-    padding: 8px 8px 8px 30px;
     display: inline-block;
     vertical-align: top;
     overflow: auto;
-    box-sizing:conborder-box;
-    border: 1px solid rgb(0, 0, 0);
+    height: 20%;
+    margin-left: 15px;
+    padding: 8px 8px 8px 30px;
     border-radius: 1.5%;
+    border: 1px solid rgb(0, 0, 0);
+    background-color: rgb(90, 190, 230);
 }
 
+/*Текст сайтбара*/
 .sidebar_text_style{
     font-family: 'Arial';
+    display: block;
     font-size:20px;
     font-weight: 500;
-    display: block;
     padding: 5px 22px 0px 0px;
 }
 
+/*Слайдер месяцев*/
 .month_slider_style{
     display: block;
     font-size:55px;
@@ -61,39 +66,46 @@
     width: 20px;
 }
 
+/*Для расположения карточек в столбик*/
 .flex{
     display: flex;
 }
 
+/*Заголовок страницы*/
 .heading{
-    display: block;
-    font-family: 'Arial';
     font-size: 50px;
     font-weight: 600;
-    color: black;
-    text-align: center;
-}
-
-.heading_table{
     display: block;
     font-family: 'Arial';
+    text-align: center;
+    color: black;
+}
+
+/*Заголовок тблицы*/
+.heading_table{
     font-size: 40px;
     font-weight: 600;
-    color: black;
-    text-align: center;
     height: 70px;
+    display: block;
+    font-family: 'Arial';
+    text-align: center;
+    color: black;
     background-color: rgb(190, 239, 255);
 }
 
-.big_color{
-    background-color: rgb(190, 239, 255);
-}
-
+/*Кнопка*/
 .button{
     font-family: 'Arial';
-    font-size:20px;
-    font-weight: 900;
     text-align: center;
+    font-size:20px;
+    font-weight: 600;
     margin-left: 15px;
+    padding: 10px 20px 10px 20px;
+    border-radius: 2%;
     background-color: rgb(90, 190, 230);
+}
+
+/* Цвет всего фона*/
+.big_color{
+    background-color: rgb(190, 239, 255);
 }

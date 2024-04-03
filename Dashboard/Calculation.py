@@ -1,18 +1,11 @@
 import pandas as pd
-from dash import Dash, html, dcc, dash_table, callback, Output, Input
-
-#import plotly.express as px
-#from plotly.subplots import make_subplots
-#import plotly.graph_objects as go
+from dash import  html, dash_table
 
 from Parsing_data import df
 
-b_table = {'whiteSpace': 'normal',
-        'backgroundColor': 'white', 
-        'height': 'auto'}
-
-
+#Главная рассчетная функция
 def calculations (selected_hospital, month, year, n_clicks):
+            
             #Подготовка данных
             new_df = df[(df['Hospital'].isin(selected_hospital)) & 
                         (df['Date'].dt.month.isin(range(month[0], month[1] + 1))) &
@@ -24,14 +17,15 @@ def calculations (selected_hospital, month, year, n_clicks):
                                         style_data={
                                             'whiteSpace': 'normal',
                                             'backgroundColor': '#BEEFFF', 
-                                            'height': 'auto'},
+                                            'height': 'auto'
+                                                    },
                                         style_header={
                                             'backgroundColor': '#BEEFFF',
                                             'fontWeight': 'bold' 
-                                        }
-            )
+                                                    }
+                                        )
             # Всего ОКС
-            total_ACS =  new_df.loc[new_df['№ п/п'] == 47, 'Value'].sum()
+            total_ACS = new_df.loc[new_df['№ п/п'] == 47, 'Value'].sum()
 
             # Кол-во ОКС с подъемом ST
             ACS_with_ST = new_df.loc[new_df['№ п/п'] == '47.1','Value'].sum()
@@ -52,6 +46,7 @@ def calculations (selected_hospital, month, year, n_clicks):
             total_IM = new_df.loc[new_df['№ п/п'] == 49,'Value'].sum()
             MI_mortality_rate = f'{round((IM_mort / total_IM)*100, 1)} %' if total_IM > 0 else 0
 
+            #Блок для работы кнопки, окрывающей таблицу
             if n_clicks is None:
                 block_table = []
 
@@ -60,7 +55,7 @@ def calculations (selected_hospital, month, year, n_clicks):
                     html.Div('Табличные данные', className='heading_table'),
                     html.Div(table,className='b_table')])
             else:
-                block_table = []  
-                            
+                block_table = []                
+            
             return total_ACS, ACS_with_ST, ACS_without_ST, PCI_coverage,ACS_mort_rate, MI_mortality_rate, block_table 
 
