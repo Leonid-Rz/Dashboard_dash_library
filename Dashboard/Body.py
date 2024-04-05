@@ -1,13 +1,11 @@
 from dash import Dash, html, callback, Output, Input
 import dash_bootstrap_components as dbc
-import pandas as pd
 import dash_html_components as html
 
 from Blocks import head, sidebar_and_cards, table_block
 from Calculation import calculations
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP])
-
 
 app.layout = html.Div(children= [
                             head,
