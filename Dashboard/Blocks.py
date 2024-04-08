@@ -125,9 +125,14 @@ table_block = html.Div( children= [
                 html.Div (id='datatable-container', className='color')
                     ])
 
+#Гистограмма ,className='flex'
+hist_ACS= html.Div(children= [dcc.Graph(id='ACS-hist')
+                            ],className='hist'
+                            )
 #Объединенные блоки сайтбара и карточек
 sidebar_and_cards=html.Div(children= [
                                 block_sidebar,
-                                line_of_cards
+                                line_of_cards,
+                                hist_ACS
                                     ],className='flex'
                                 )

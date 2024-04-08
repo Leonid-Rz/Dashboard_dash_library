@@ -105,6 +105,15 @@
     background-color: rgb(90, 190, 230);
 }
 
+.hist{
+    display: block;
+    width: 1270px;
+    height: 470px;
+    border: 1px solid rgb(0, 0, 0);
+    box-sizing: border-box;
+    border-radius: 0.2%;
+}
+
 /* Цвет всего фона*/
 .big_color{
     background-color: rgb(190, 239, 255);

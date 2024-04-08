@@ -1,11 +1,8 @@
-from dash import Dash, dcc, html, Input, Output
-import plotly.express as px
+from dash import Dash, dcc, html
 import plotly.graph_objects as go
-import json
 from plotly.subplots import make_subplots
 
 from Dashboard.Parsing_data import df  
-import numpy as np
 
 
 selected_hospital= ['ГОБУЗ "Боровичская ЦРБ"','ГОБУЗ "Старорусская ЦРБ"', 'ГОБУЗ "НОКБ"']
@@ -17,6 +14,7 @@ months_dict = {1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апр
 new_df = df[(df['Hospital'].isin(selected_hospital)) & 
             (df['Date'].dt.month.isin(range(month[0], month[1] + 1))) &
             (df['Date'].dt.year == int(year))]
+
 
 
 #ОКС без одъема ST
@@ -42,45 +40,66 @@ ACS_mort['mort_rate'] = ACS_mort['Value'] / total_ACS_['Value'] * 100
 ACS_mort['mort_rate'] = ACS_mort['mort_rate'].map(lambda x: f'{x:.1f} %')
 
 
-ACS_fig = make_subplots(specs=[[{'secondary_y': True}]])
-# Добавляем гистограмму к фигуре
-ACS_fig.add_trace(go.Bar(name='ОКС с подъемом ST', x=gr_ACS_with_ST['Month_number'], y=gr_ACS_with_ST['Value'],
-                          text=gr_ACS_with_ST['Value'], textposition='auto', marker_color='PaleTurquoise', hoverinfo='text'),secondary_y=False)
+ACS_fig = make_subplots(specs=[[{'secondary_y': True}]]) #Позволяет наложить несколько осей Y на один график
 
-ACS_fig.add_trace(go.Bar(name='ОКС без одъема ST', x=ACS_without_ST['Month_number'], 
-                         y=ACS_without_ST['Value'], text=ACS_without_ST['Value'],textposition='auto', marker_color='SteelBlue', hoverinfo='text'), 
-                         secondary_y=False)
+# Добавление гистограммы для ОКС с подъемом ST
+ACS_fig.add_trace(go.Bar(
+        name='ОКС с подъемом ST',
+        x=gr_ACS_with_ST['Month_number'],
+        y=gr_ACS_with_ST['Value'],
+        text=gr_ACS_with_ST['Value'],
+        textposition='auto',
+        marker_color='rgb(15, 130, 240)',
+        hoverinfo='text'
+    ), secondary_y=False)
 
-ACS_fig.add_trace (go.Scatter(x=ACS_mort['Month_number'], y=ACS_mort['Value'], mode='lines', name='Летальность ОКС',
-                              marker_color='red', text=ACS_mort['mort_rate'],
-                                 textfont={'family': 'Arial', 'size': 10, 'color': 'rgb(0, 0, 0)'},
-                                 textposition='top center', hoverinfo='text'),secondary_y=True)
-ACS_fig.update_layout(yaxis={'visible': False, 'showticklabels': False}, yaxis2={'visible': False, 'showticklabels': False}, 
-                    title={'text': '<b>Динамика количества ОКС и летальности при ОКС за выбранный год</b>',
-                            'font': {'family': 'Arial', 'size': 24, 'color': 'rgb(0, 0, 0)'}, 'x': 0.5, 'y': 0.85}, 
-                    plot_bgcolor='rgb(255, 255, 255)', 
-                    margin={'l': 30, 'r': 0, 't': 100, 'b': 0}, 
-                    legend={'x': 0.95, 'y': 0.5, 'traceorder': 'reversed', 'font': {'family': 'Arial', 'size': 14, 'color': 'Black'}, 
-                            'yanchor': 'top', 'xanchor': 'left'})
+# Добавление гистограммы для ОКС без подъема ST
+ACS_fig.add_trace(go.Bar(
+    name='ОКС без подъема ST',
+    x=ACS_without_ST['Month_number'],
+    y=ACS_without_ST['Value'],
+    text=ACS_without_ST['Value'],
+    textposition='auto',
+    marker_color='rgb(100, 170, 240)',
+    hoverinfo='text'
+), secondary_y=False)
 
+# Добавление линии для летальности ОКС
+ACS_fig.add_trace(go.Scatter(
+    x=ACS_mort['Month_number'],
+    y=ACS_mort['Value'],
+    mode='lines',
+    name='Летальность ОКС',
+    marker_color='red',
+    text=ACS_mort['mort_rate'],
+    textfont={'family': 'Arial', 'size': 10, 'color': 'rgb(0, 0, 0)'},
+    textposition='top center',
+    hoverinfo='text'
+), secondary_y=True)
 
+# Обновление макета графика
+ACS_fig.update_layout(
+    yaxis={'visible': False, 'showticklabels': False},
+    yaxis2={'visible': False, 'showticklabels': False},
+    title={'text': '<b>Динамика количества и летальности при ОКС</b>',
+           'font': {'family': 'Arial', 'size': 24, 'color': 'rgb(0, 0, 0)'},
+           'x': 0.5, 'y': 0.85},
+    plot_bgcolor='rgb(255, 255, 255)',
+    margin={'l': 30, 'r': 0, 't': 100, 'b': 0},
+    legend={'x': 0.95, 'y': 0.5, 'traceorder': 'reversed',
+            'font': {'family': 'Arial', 'size': 14, 'color': 'Black'},
+            'yanchor': 'top', 'xanchor': 'left'}
+)
+
+# Обновление стиля гистограмм
 ACS_fig.update_layout(barmode='stack')
-ACS_fig.update_traces(textfont_size=16)
+ACS_fig.update_traces(textfont_size=18)
 
-# Настройка макета
-#fig.update_layout(title='Гистограмма', xaxis_title='Месяц', yaxis_title='Значение')
-
-# Создаем объект гистограммыfig
-
-# Отображаем гистограмму
 
 app = Dash(__name__)
 
 app.layout = html.Div(children=[
-                        html.Div('yt b '),
-                        dcc.Graph(figure=ACS_fig) 
-                                 
-                                                  
+                        dcc.Graph(figure=ACS_fig)      
 
 ])
 

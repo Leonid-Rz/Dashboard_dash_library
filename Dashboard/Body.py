@@ -22,6 +22,7 @@ app.layout = html.Div(children= [
     Output('ACS_mort_rate', 'children'),
     Output('MI_mortality_rate', 'children'),
     Output('datatable-container', 'children'),
+    Output('ACS-hist', 'figure'),
     Input('choose_a_hospital', 'value'),
     Input('monthly_slider', 'value'),
     Input('choose_a_year', 'value'),
