@@ -1,4 +1,4 @@
-from dash import  html, dash_table, dcc
+from dash import  html, dash_table
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -138,7 +138,7 @@ def calculations (selected_hospital, month, year, n_clicks):
 
 # Обновление стиля гистограмм
             ACS_fig.update_layout(barmode='stack')
-            ACS_fig.update_traces(textfont_size=18)
+            ACS_fig.update_traces(textfont_size=15)
         
             return total_ACS, ACS_with_ST, ACS_without_ST, PCI_coverage,ACS_mort_rate, MI_mortality_rate, block_table, ACS_fig
 

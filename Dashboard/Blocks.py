@@ -1,4 +1,4 @@
-from dash import dcc, html, callback, Output, Input
+from dash import dcc, html
 import dash_bootstrap_components as dbc
 import calendar
 import locale

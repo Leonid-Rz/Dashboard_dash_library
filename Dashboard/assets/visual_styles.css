@@ -107,10 +107,10 @@
 
 .hist{
     display: block;
+    box-sizing: border-box;
     width: 1270px;
     height: 470px;
     border: 1px solid rgb(0, 0, 0);
-    box-sizing: border-box;
     border-radius: 0.2%;
 }
 
