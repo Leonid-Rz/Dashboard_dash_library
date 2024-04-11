@@ -1,21 +1,16 @@
 from dash import  html, dash_table
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import plotly.express as px
 
 from Parsing_data import df
 
-
-#Главная рассчетная функция
-def calculations (selected_hospital, month, year, n_clicks):
-
-            months_dict = {1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель', 5: 'Май', 6: 'Июнь',
-               7: 'Июль', 8: 'Август', 9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'}
-
+#Расчетная функция кнопки с таблицей
+def table_and_button (selected_hospital, month, year, n_clicks):
 #Подготовка данных
             new_df = df[(df['Hospital'].isin(selected_hospital)) & 
                         (df['Date'].dt.month.isin(range(month[0], month[1] + 1))) &
                         (df['Date'].dt.year == int(year))]
-
 #Основная таблица
             table = dash_table.DataTable(data=new_df.to_dict('records'),
                                         page_size=15,
@@ -29,6 +24,31 @@ def calculations (selected_hospital, month, year, n_clicks):
                                             'fontWeight': 'bold' 
                                                     }
                                         )
+#Блок для работы кнопки, окрывающей и закрывающей таблицу
+            if n_clicks is None:
+                block_table = []
+
+            elif n_clicks % 2 != 0: 
+                block_table=html.Div(children=[
+                    html.Div('Табличные данные', className='heading_table'),
+                    html.Div(table,className='b_table')])
+            else:
+                block_table = []  
+
+            return block_table
+
+
+#Главная рассчетная функция
+def calculations (selected_hospital, month, year):
+
+            months_dict = {1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель', 5: 'Май', 6: 'Июнь',
+               7: 'Июль', 8: 'Август', 9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'}
+
+#Подготовка данных
+            new_df = df[(df['Hospital'].isin(selected_hospital)) & 
+                        (df['Date'].dt.month.isin(range(month[0], month[1] + 1))) &
+                        (df['Date'].dt.year == int(year))]
+
 # Всего ОКС
             total_ACS = new_df.loc[new_df['№ п/п'] == 47, 'Value'].sum()
 
@@ -50,17 +70,7 @@ def calculations (selected_hospital, month, year, n_clicks):
             IM_mort = new_df.loc[new_df['№ п/п'] == 48,'Value'].sum()
             total_IM = new_df.loc[new_df['№ п/п'] == 49,'Value'].sum()
             MI_mortality_rate = f'{round((IM_mort / total_IM)*100, 1)} %' if total_IM > 0 else 0
-
-#Блок для работы кнопки, окрывающей таблицу
-            if n_clicks is None:
-                block_table = []
-
-            elif n_clicks % 2 != 0: 
-                block_table=html.Div(children=[
-                    html.Div('Табличные данные', className='heading_table'),
-                    html.Div(table,className='b_table')])
-            else:
-                block_table = []                
+             
 #Расчеты для гистограммы
 #ОКС без одъема ST
             gr_ACS_without_ST = new_df.loc[new_df['№ п/п'] == '47.2',['Value','Month_number']]
@@ -139,6 +149,41 @@ def calculations (selected_hospital, month, year, n_clicks):
 # Обновление стиля гистограмм
             ACS_fig.update_layout(barmode='stack')
             ACS_fig.update_traces(textfont_size=15)
-        
-            return total_ACS, ACS_with_ST, ACS_without_ST, PCI_coverage,ACS_mort_rate, MI_mortality_rate, block_table, ACS_fig
+
+# График- путь больного ОКС с подъемом ST
+            ACS_with_elevation_ST_12_h_delivery = new_df.loc[(df['№ п/п'] == 34), 'Value'].sum()
+            ACS_with_elevation_ST_12_h_PCI = new_df.loc[(df['№ п/п'] == '39.1.2.1'), 'Value'].sum()
+            
+            ACS_path_data = {'number': [ACS_with_ST, ACS_with_elevation_ST_12_h_delivery,
+                                        ACS_with_elevation_ST_12_h_PCI],
+                            'stage': ['Всего', 'Доставлено за 12 часов', 'ЧКВ за 12 часов']}
+            ACS_way = px.funnel(ACS_path_data, x='number', y='stage')
+            ACS_way.update_layout(
+                plot_bgcolor='rgb(190, 239, 255)',
+                paper_bgcolor='rgb(190, 239, 255)', 
+                margin={'l': 0, 'r': 0, 't': 50, 'b': 0}, 
+                title={'x': 0.5, 'y': 0.9, 'text': '<b>Путь больного с ОКСпST</b>', 
+                       'font': {'family': 'Arial', 'size': 20, 'color': 'Black'}, 
+                        'yanchor': 'bottom', 'xanchor': 'center'})
+ # Гистограмма ОКСбпST высокого и низкого риска
+            ACS_without_eST_high_risk = new_df.loc[(df['№ п/п'] == '47.2.1'), 'Value'].sum()
+            ACS_without_eST_low_risk = new_df.loc[(df['№ п/п'] == '47.2.2'), 'Value'].sum()
+            ACS_with_eST_risk_fig = go.Figure(
+                data=[
+                    go.Bar(x=['Высокий риск', 'Низкий риск'], y=[ACS_without_eST_high_risk, ACS_without_eST_low_risk],
+                        text=[ACS_without_eST_high_risk, ACS_without_eST_low_risk], 
+                        textfont=dict(size=18, color="black"), 
+                        marker_color=['#FFBAA0', '#8BDDB8'], 
+                        hoverinfo='text')
+                ])
+            ACS_with_eST_risk_fig.update_layout(yaxis={'visible': False, 'showticklabels': False}, 
+                                                plot_bgcolor='rgb(190, 239, 255)',
+                                                paper_bgcolor='rgb(190, 239, 255)',  
+                                                margin={'l': 0, 'r': 0, 't': 50, 'b': 0}, 
+                                                title={'x': 0.5, 'y': 0.9, 'text': '<b>ОКСбпST по степени риска</b>', 'font': {'family': 'Arial', 'size': 20, 'color': 'Black'}, 
+                                                    'yanchor': 'bottom', 'xanchor': 'center'})
+
+
+                
+            return total_ACS, ACS_with_ST, ACS_without_ST, PCI_coverage,ACS_mort_rate, MI_mortality_rate, ACS_fig, ACS_way, ACS_with_eST_risk_fig
 

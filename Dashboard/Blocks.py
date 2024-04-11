@@ -9,7 +9,7 @@ locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 #Заголовок страницы
 head = html.Div(children=[
-                     'Мониторинг ОКС Новгородская область'
+                     'Мониторинг ОКС города Спрингфилда'
                         ], className='heading'
                 )
 
@@ -71,8 +71,8 @@ choosing_a_hospital = html.Div(children=[
                                 html.H3(children='Выберете больницу', style={'fontWeight': 550}),
                                 html.P([
                                     dcc.Checklist(            
-                                        ['ГОБУЗ "Боровичская ЦРБ"','ГОБУЗ "Старорусская ЦРБ"', 'ГОБУЗ "НОКБ"'],
-                                        ['ГОБУЗ "Боровичская ЦРБ"','ГОБУЗ "Старорусская ЦРБ"', 'ГОБУЗ "НОКБ"'], 
+                                        ['ГОБУЗ "ЦРБ им. Гомера"', 'ГОБУЗ "ЦРБ им. Барта"', 'ГОБУЗ "ИМО"'],
+                                         ['ГОБУЗ "ЦРБ им. Гомера"', 'ГОБУЗ "ЦРБ им. Барта"', 'ГОБУЗ "ИМО"'], 
                                         id='choose_a_hospital'
                                         ),
                                 html.Hr()
@@ -125,14 +125,29 @@ table_block = html.Div( children= [
                 html.Div (id='datatable-container', className='color')
                     ])
 
-#Гистограмма ,className='flex'
+#Гистограмма ОКС
 hist_ACS= html.Div(children= [dcc.Graph(id='ACS-hist')
                             ],className='hist'
                             )
+#Гистограмма пути при ОКС
+hist_ACS_way= html.Div(children= [dcc.Graph(id='ACS_way')
+                            ],className='hist'
+                            )
+
+hist_ACS_with_eST_risk=html.Div(children= [dcc.Graph(id='ACS_with_eST_risk')
+                            ],className='hist'
+                            )
+#Стопка гистограмм
+graphics=html.Div(children= [
+                        hist_ACS,
+                        hist_ACS_way,
+                        hist_ACS_with_eST_risk                        
+                            ]
+                        )
 #Объединенные блоки сайтбара и карточек
 sidebar_and_cards=html.Div(children= [
                                 block_sidebar,
                                 line_of_cards,
-                                hist_ACS
+                                graphics
                                     ],className='flex'
                                 )
