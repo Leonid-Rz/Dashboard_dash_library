@@ -1,11 +1,10 @@
 from dash import dcc, html
 import dash_bootstrap_components as dbc
-import calendar
-import locale
 
-
-#Перевели месяцы
-locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
+month_names = [
+    '_', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+]
 
 #Заголовок страницы
 head = html.Div(children=[
@@ -94,21 +93,25 @@ choosing_a_year = html.Div(children=[
                             )
 
 #Выбор месяца
-choosing_the_month= html.Div(children=[
-                                html.H3(children='Выберете месяц', style={'fontWeight': 550}),
-                                html.Div(children=[
+choosing_the_month = html.Div(children=[
+                                    html.H3(children='Выберете месяц', style={'fontWeight': 550}),
+                                    html.Div(
+                                        children=[
                                             dcc.RangeSlider(
-                                                min=1, max=12, 
+                                                min=1,
+                                                max=12,
                                                 step=1,
-                                                value=[1,12],
-                                                marks={i:{'label': calendar.month_name[i], 'style': {'fontSize': '17px', 'color':'black'}} for i in range(1, 13)},
+                                                value=[1, 12],
+                                                marks={i: {'label': month_names[i], 'style': {'fontSize': '17px', 'color': 'black'}} for i in range(1, 13)},
                                                 tooltip={"placement": "bottom", "always_visible": False},
-                                                vertical = True,
-                                                verticalHeight = 400,
+                                                vertical=True,
+                                                verticalHeight=400,
                                                 id='monthly_slider'
-                                                )], className='month_slider_style'
-                                        )
-                                    ]
+                                            )
+                                        ],
+                                        className='month_slider_style'
+                                    )
+                                ]
                             )
 
 #Общий элемент сайтбара 
@@ -122,8 +125,10 @@ block_sidebar= html.Div( children= [
 #Полный блок таблицы
 table_block = html.Div( children= [
                 html.Button('Показать табличные данные', id='show-table-button',className='button'),
-                html.Div (id='datatable-container', className='color')
-                    ])
+                html.Div (id='datatable-container', className='color'),
+                html.Script('''document.getElementById('show-table-button').addEventListener('click', function() {document.getElementById('datatable-container').scrollIntoView({ behavior: 'smooth' });});
+                            ''')
+    ])
 
 #Гистограмма ОКС
 hist_ACS= html.Div(children= [dcc.Graph(id='ACS-hist')

@@ -1,120 +1,142 @@
-/*Заголовок карточки*/
+body {
+  background-color: rgb(190, 239, 255);
+  margin: 0;
+  padding: 0;
+}
+/* Заголовок карточки */
 .card_header {
-    font-family: 'Arial'; 
-    font-size:20px;
-    font-weight: 900;
-    text-align: center; 
-    background-color: rgb(90, 190, 230);
+  font-family: "Arial";
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
+  background-color: rgb(90, 190, 230);
 }
 
-/*Тело карточки*/
-.card_text{ 
-    font-family: 'Arial';
-    font-size: 20px;
-    font-weight: 600;
-    text-align: center;
-    vertical-align: bottom; 
-    margin: 0;
-    color: black;
+/* Тело карточки */
+.card_text {
+  font-family: "Arial";
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: bottom;
+  margin: auto;
+  color: black;
 }
 
-/*Вся карточка*/
+/* Вся карточка */
 ._card_ {
-    display: flex;
-    margin: 15px;
-    padding-bottom: 10px;
-    bottom: 15px;
-    border: 1px solid rgb(0, 0, 0);
-    background-color: rgb(210, 240, 245);
+  display: flex;
+  margin: 15px;
+  padding-bottom: 10px;
+  border: 1px solid rgb(0, 0, 0);
+  background-color: rgb(210, 240, 245);
+  width: 250px; /* Установите фиксированную ширину для карточек */
+  height: 150px; /* Установите фиксированную высоту для карточек*/
 }
 
-/*Стопка карточек*/
-.cards_stack{
-    display: initial;
-    vertical-align: top;
-    width: 15%;
+/* Стопка карточек */
+.cards_stack {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  width: 300px; /* Установите фиксированную ширину для стопки карточек */
+  min-width: 100px; /* Установите минимальную ширину для предотвращения сжатия */
+  flex-shrink: 0; /* Не позволяйте стопке карточек сжиматься */
+}
+/* Сайтбар */
+.sidebar {
+  margin: 15px;
+  width: 300px; /* Установите фиксированную ширину для сайтбара */
+  max-height: 82vh;
+  display: flex; /* Используйте flex для управления внутренними элементами */
+  flex-direction: column; /* Расположите элементы в колонку */
+  overflow: auto; /* Позволяет прокрутку, если содержимое превышает высоту */
+  padding: 8px 8px 8px 30px;
+  border-radius: 1.5%;
+  border: 1px solid rgb(0, 0, 0);
+  background-color: rgb(90, 190, 230);
+  flex-shrink: 0; /* Не позволяйте сайтбару сжиматься */
+  box-sizing: border-box; /* Учитывайте паддинги и границы в общей ширине и высоте */
 }
 
-/*Сайтбар*/
-.sidebar{
-    width: auto;
-    display: inline-block;
-    vertical-align: top;
-    overflow: auto;
-    height: 20%;
-    margin-left: 15px;
-    padding: 8px 8px 8px 30px;
-    border-radius: 1.5%;
-    border: 1px solid rgb(0, 0, 0);
-    background-color: rgb(90, 190, 230);
+/* Текст сайтбара */
+.sidebar_text_style {
+  font-family: "Arial";
+  display: block;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 5px 22px 0px 0px;
 }
 
-/*Текст сайтбара*/
-.sidebar_text_style{
-    font-family: 'Arial';
-    display: block;
-    font-size:20px;
-    font-weight: 500;
-    padding: 5px 22px 0px 0px;
-}
-
-/*Слайдер месяцев*/
-.month_slider_style{
-    display: block;
-    font-size:55px;
-    margin-left: 30px; 
-    width: 20px;
+/* Слайдер месяцев */
+.month_slider_style {
+  display: block;
+  font-size: 55px;
+  margin-left: 30px;
+  width: 20px;
 }
 
 /*Для расположения карточек в столбик*/
-.flex{
-    display: flex;
+.flex {
+  display: flex;
 }
 
 /*Заголовок страницы*/
-.heading{
-    font-size: 50px;
-    font-weight: 600;
-    display: block;
-    font-family: 'Arial';
-    text-align: center;
-    color: black;
+.heading {
+  font-size: 50px;
+  font-weight: 600;
+  display: block;
+  font-family: "Arial";
+  text-align: center;
+  color: black;
 }
 
 /*Заголовок тблицы*/
-.heading_table{
-    font-size: 40px;
-    font-weight: 600;
-    height: 70px;
-    display: block;
-    font-family: 'Arial';
-    text-align: center;
-    color: black;
-    background-color: rgb(190, 239, 255);
+.heading_table {
+  font-size: 40px;
+  font-weight: 600;
+  height: 70px;
+  display: block;
+  font-family: "Arial";
+  text-align: center;
+  color: black;
+  background-color: rgb(190, 239, 255);
 }
 
 /*Кнопка*/
-.button{
-    font-family: 'Arial';
-    text-align: center;
-    font-size:20px;
-    font-weight: 600;
-    margin-top: -110;
-    margin-left: 15px;
-    padding: 10px 20px 10px 20px;
-    border-radius: 2%;
-    background-color: rgb(90, 190, 230);
+.button {
+  font-family: "Arial";
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-left: 15px;
+  padding: 10px 20px 10px 20px;
+  border-radius: 2%;
+  background-color: rgb(90, 190, 230);
+  cursor: pointer;
 }
+
+/* Пространства для прокрутки */
+.color {
+  width: 100%; /* Во всю ширину страницы */
+  height: 10vh; /* Высота 10% от высоты окна браузера */
+}
+
 /*Гистограмма*/
-.hist{
-    display: block;
-    box-sizing: border-box;
-    width: 1270px;
-    height: 470px;
-    border-radius: 0.2%;
+.hist {
+  display: block;
+  box-sizing: border-box;
+  width: 1270px;
+  height: 470px;
+  border-radius: 0.2%;
 }
 
 /* Цвет всего фона*/
-.big_color{
-    background-color: rgb(190, 239, 255);
+.big_color {
+  background-color: rgb(190, 239, 255);
+  width: auto;
+  height: auto;
+  padding: auto;
+  margin: auto;
 }
